@@ -44,7 +44,7 @@ It has 2 major parts:
   * `rescue_Factiva_csv.py` - It checks Factiva_uncaptured.csv, run the same search queries as `generate_factive_csv.py` in order to find urls for the rest articles. If an article's url' can be found, its data will be added in `Factiva_csv.csv`, otherwise it stays in `Factive_uncaptured.csv`. The reason we kept those uncaptured articles all in `Factive_uncaptured.csv` is because sometimes Google CSE cannot find the url today but may find it tomorrow with the same search query. We are also using multiple `cx & key` too. Each day, we re-run this rescue code and update both `Factiva_csv.csv` and `Factiva_uncaptured.csv`
   * `rescue_Factive_csv_LP.py` - It is used after `rescue_Factiva_csv.py` can no longer find more urls for the left articles. Instead of using TD text as search query, the code here uses LP text. it updates `Factiva_csv.csv` and `Factiva_uncaptured.csv`, but the 2 search queries in these csv files are still the 2 search queries from TD text.
 * Sample output can be found under folder `Sample_Resources/Factiva_CSV`, it contains `Factiva_csv.csv` & `factiva_uncaptured.csv`
-
+* After rescue_Factive_csv_LP.py can no longer find more urls for the left articles, we manually find urls through Bing website and update all the data into `Factiva_csv.csv`
 
 
 [1]:https://cse.google.com/cse/all
