@@ -306,8 +306,8 @@ def main():
         page_num = len([f for f in os.listdir(factiva_data_folder)
                     if os.path.isfile(factiva_data_folder+"/"+f) and '.htm' in f])
         file_path_pre = factiva_data_folder+"Factiva_"+str(yr)+"_"
-        captured_output_path = factiva_csv_folder + "Factiva_csv.csv"
-        uncaptured_output_path =  factiva_csv_folder + "Factiva_uncaptured.csv"
+        captured_output_path = factiva_csv_folder + "Factiva_csv.csv"            # YOU MAY NEED TO CHANGE THE PATH HERE
+        uncaptured_output_path =  factiva_csv_folder + "Factiva_uncaptured.csv"  # YOU MAY NEED TO CHANGE THE PATH HERE
         exception_count = 0
         exception_limit = 10     # YOU MAY WANT TO SET THE EXCEPTION THRESHOLD HERE
 
