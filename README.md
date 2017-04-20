@@ -4,8 +4,8 @@ Extract articles and comments from news sites
 It collects and preprocesses Globe & Mail news data from both Factiva library and Online Globe & Mail, finally generates corpus for all the news article and comments data.
 
 It has 2 major parts:
-<b>Part 1 - Factiva data</b>
-<b>Part 2 - Online Globe & Mail</b>
+* <b>Part 1 - Factiva data</b>
+* <b>Part 2 - Online Globe & Mail</b>
 
 ********************************************************************************
 
