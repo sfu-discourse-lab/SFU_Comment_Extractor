@@ -11,7 +11,14 @@ It has 2 major parts:
 
 <b>PART 1 - Factiva Data</b>
 
-1. Manually download Gloab & Mail articles from Factiva library
+1. About Factiva
+* [Factiva is a business information and research tool owned by Dow Jones & Company. Factiva aggregates content from both licensed and free sources, and provides organizations with search, alerting, dissemination, and other information management capabilities.][3]
+* The reason we use Factiva databse is because, it collects all the Globe and Mail news articles data, but we are only interested in <b>Opinions</b> and <b>Editorials</b>, and Factiva allows us to do the article filtering.
+* [Get access to Factiva][4]
+* NOTE: Factiva data is not all 100% match original online articles.
+
+
+2. Manually download Gloab & Mail articles from Factiva library
 * Login Factiva 
 * In the `Date` section, select the date range. In our data, we chose `from 2012/01/01 to 2016/12/31`
 * In the `Duplicates` section, select `Identical`, so that Factiva will remove identical duplicates
@@ -26,13 +33,13 @@ It has 2 major parts:
 * Mouse over the pop-up window, right click thr mouse and click `Save As`. Define the file name and choose `Format` as `Webpage, Complete`. Click `Save` and you will get an .htm file downloaded
 * Normally, each .htm file contains 100 articles, unless it is the last .htm file in your search result
 
-2. Create Google CSE Account
+3. Create Google CSE Account
 * With Google CSE (Custom Search Engine), you can do automated search 
 * In the code used here, we just need <b>cx</b> (Custom Search Engine id), <b>key</b> (API Key)
 * <b>In order to get cx</b>, visit [this website][1], create your own custom search engine and you will find `cx=...` through the url in the browser
 * <b>In order to get key</b>, visit [Google Dev Center][2], then click `ENABLE API` and enable `Custom Search API`. Next, click `Credentials`, and click `Create Credential` to create the key
 
-3. Generate CSV file from downloaded data
+4. Generate CSV file from downloaded data
 * The CSV file columns contain <b>all the index</b> used by Factiva articles, there are also 2 types of search queries generated from the article text, url of the article and the article id.
 * We generated url for each article using Google CSE with the 2 types of queries. Article id is extracted from the url.
 * Google CSE cannot find all the urls, because some urls have been removed after a certain time or the 2 types of search query may not work. Meanwhile Google CSE has daily search limits. So, each day we kept running the data collection code to update `Factiva_csv.csv` with found urls and updates `Factiva_uncaptured.csv` for articles without urls. Then in the next day, just re-run the rescue code to read `Factiva_uncaptured.csv` and update `Factiva_csv.csv`.
@@ -47,5 +54,17 @@ It has 2 major parts:
 * After rescue_Factive_csv_LP.py can no longer find more urls for the left articles, we manually find urls through Bing website and update all the data into `Factiva_csv.csv`
 
 
+********************************************************************************
+
+<b>PART 2 - Online Globe & Mail</b>
+
+* Compared with Factiva data, we are using Globe & Mail online articles. Using the urls we collected in our `Factiva_csv.csv` as <b>seed urls</b>, we have crawled more urls within the time range `2012/01/01 - 2016/12/31` as <b>base urls</b>. There are 9100 distinct seed urls and 10399 distinct base urls. Based on the base urls, we further extracted article data files and comments data files.
+* NOTE: On 2016/11/28, Globe & Mail started to change their website, by adding <b>reactions</b> into each comments, so that users can choose "Like", "Funny", "Wow", "Sad" or "Disagree". Meanwhile, all of their article comments created before 2016/11/28 totally disappeared from the website but some of these old comments were still extractable while other old comments were un-extractable. We tried to contact Globe & Mail but they could not guarantee all the old comments would either be kept in their database or be all recovered in the future. Therefore, in our code, we have methods to extract both old comments that are invisible from the website and new comments with reactions data.
+
+
+
+
 [1]:https://cse.google.com/cse/all
 [2]:https://console.developers.google.com/apis/dashboard
+[3]:https://en.wikipedia.org/wiki/Factiva
+[4]:https://global.factiva.com/factivalogin/login.asp?productname=global
