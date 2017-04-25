@@ -59,5 +59,4 @@ class BaseURLSpider(CrawlSpider):
                             print('***Article URL***', resp_url)
 
                             with open(self.output_path, 'a') as out:
-                                json.dump(resp_url, out)
-                                out.write("\n")
+                                out.write(resp_url+"\n")

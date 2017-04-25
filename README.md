@@ -63,11 +63,26 @@ It has 2 major parts:
 
 1. Crawl base urls from seed urls
 * Crawling is to extract new urls that appear in each seed url.
-* Seed urls and base urls are all unique. Collected base urls should all start with "http://www.theglobeandmail.com/opinion/"
+* Seed urls and base urls are all unique. Collected base urls should <b>all start with "http://www.theglobeandmail.com/opinion/"</b>
 * File `sample_seed_urls.txt` under folder `Sample_Resources/Online_Resources` are the sample seed urls. Seed urls all come from `Factiva_csv.csv`. `collect_seed_urls.py` under folder `Source_Code/Online_Source` extracts the seed urls from `Factiva_csv.csv` for you.
 * `article_base_url_spider.py` under folder `Source_Code/Online_Source` generates the base urls.
   * To run the code, in your terminal, `cd` to folder `Source_Code/Online_Source`, then type `sh run_article_base_url_spider.sh`. 
-  * In this code, the input is our `sample_seed_urls.txt` under folder `Sample_Resources/Online_Resources`. The output is `sample_base_urls.txt` under folder `Sample_Resources/Online_Resources`.
+  * The input is a file of seed urls, check our `sample_seed_urls.txt` under folder `Sample_Resources/Online_Resources`. 
+  * The output is a file of base urls, check our `sample_base_urls.txt` under folder `Sample_Resources/Online_Resources`.
+
+2. Extract article data and comments before 2016/11/28
+* As we mentioned above, Globe & Mail comments created before 2016/11/28 became invisible from the website but some were still extractable while other cannot be extracted when we were doing data collection and Globe & Mail didn't give us a clear answer.
+* In this step, I have extratced all the article data for each base url, and those old comments before 2016/11/28
+  * Each article url has 1 extracted article file.
+  * Each article url has 1 comments file which include all the extractable old comments for this article.
+  * If an article's comments are not extractable, we add the article id in another file as record.
+* `old_article_comments_spider.py` does all the work in this step
+  * to run the code, in your terminal, `cd` to folder `Source_Code/Online_Source`, then type `sh run_old_article_comments_spider.sh`. 
+  * The input is is a file of base urls, check our `sample_base_urls.txt` under folder `Sample_Resources/Online_Resources`.
+  * The output are article data files, comments data files and empty comments file
+    * Check our `ArticleRawData` folder under `Sample_Resources/Online_Resources` for sample article data files.
+    * Check our `CommentsRawData` folder under `Sample_Resources/Online_Resources` for sample comments data files.
+    * Check our `empty-comment_article_ids.txt` file under `Sample_Resources/Online_Resources` for sample empty comments collections. <b>All the ids here are article ids</b>
 
 
 [1]:https://cse.google.com/cse/all
