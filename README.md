@@ -104,7 +104,6 @@ It has 2 major parts:
   * If there errors would happen during the data collection, the error info along with the comment url will be recorded in `error_comment_reactions.txt` under folder `Output`.
 
 
-
 [1]:https://cse.google.com/cse/all
 [2]:https://console.developers.google.com/apis/dashboard
 [3]:https://en.wikipedia.org/wiki/Factiva
