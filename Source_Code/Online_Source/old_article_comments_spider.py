@@ -51,7 +51,7 @@ class NewsSpider(CrawlSpider):
                          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                          'X-Requested-With': 'XMLHttpRequest'})
         self.payload = {'username': '[YOUR GLOBE & MAIL USER NAME]', 'password': '[YOUR GLOBE & MAIL PASSWORD]'}    # CHANGE THE USER AUTHENTICATION HERE
-        self.apikey = '2_oNjjtSC8Qc250slf83cZSd4sbCzOF4cCiqGIBF8__5dWzOJY_MLAoZvds76cHeQD'
+        self.apikey = '2_oNjjtSC8Qc250slf83cZSd4sbCzOF4cCiqGIBF8__5dWzOJY_MLAoZvds76cHeQD'   # This API key is for public use
         self.categoryID = 'Production'
         self.ids_seen = set()
 

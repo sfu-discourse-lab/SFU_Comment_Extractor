@@ -79,6 +79,7 @@ It has 2 major parts:
 * `old_article_comments_spider.py` does all the work in this step
   * To run the code, in your terminal, `cd` to folder `Source_Code/Online_Source`, then type `sh run_old_article_comments_spider.sh`. 
   * In the code, you also need to use your Globe & Mail user name and password. Check the line with commnet `# CHANGE THE USER AUTHENTICATION HERE`.
+  * The API key of gigya used in this code is for public use. To find more info, [check this link][5]
   * The input is is a file of base urls, check our `sample_base_urls.txt` under folder `Sample_Resources/Online_Resources`.
   * The output are article data files, comments data files and empty comments file
     * Check our `ArticleRawData` folder under `Sample_Resources/Online_Resources` for sample article data files.
@@ -90,3 +91,4 @@ It has 2 major parts:
 [2]:https://console.developers.google.com/apis/dashboard
 [3]:https://en.wikipedia.org/wiki/Factiva
 [4]:https://global.factiva.com/factivalogin/login.asp?productname=global
+[5]:http://stackoverflow.com/questions/40049808/python-urllib-is-not-extracting-reader-comments-from-a-website
