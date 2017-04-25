@@ -77,7 +77,8 @@ It has 2 major parts:
   * Each article url has 1 comments file which include all the extractable old comments for this article.
   * If an article's comments are not extractable, we add the article id in another file as record.
 * `old_article_comments_spider.py` does all the work in this step
-  * to run the code, in your terminal, `cd` to folder `Source_Code/Online_Source`, then type `sh run_old_article_comments_spider.sh`. 
+  * To run the code, in your terminal, `cd` to folder `Source_Code/Online_Source`, then type `sh run_old_article_comments_spider.sh`. 
+  * In the code, you also need to use your Globe & Mail user name and password. Check the line with commnet `# CHANGE THE USER AUTHENTICATION HERE`.
   * The input is is a file of base urls, check our `sample_base_urls.txt` under folder `Sample_Resources/Online_Resources`.
   * The output are article data files, comments data files and empty comments file
     * Check our `ArticleRawData` folder under `Sample_Resources/Online_Resources` for sample article data files.
