@@ -99,6 +99,9 @@ It has 2 major parts:
 * In this step, we majorly use `Python selenium`, it is able to extract any web elements on a website if you are able to find the HTML tag for each web element.
 * [To install Python selenium][7]
 * `get_comment_reactions.py` under folder `Source_Code/Online_Source` extracts comments and reactions, as well as reaction counts
+  * In the code, there are 2 types of `driver`
+    * You can first try `driver = webdriver.Firefox()`
+    * If the above doesn't work, you may need to [download geckodriver][8], and comment `driver = webdriver.Firefox()`, uncomment `driver = webdriver.Firefox(executable_path='/Users/devadmin/Documents/geckodriver')` and change the path here as your own geckodriver path.
   * Extracted comments & reactions for each article will be saved as a JSON file in folder `Output/CommentReactionsRawData`.
   * If an article with empty comments, the article id will be added in `empty_comment_reactions.txt` under folder `Output`.
   * If there errors would happen during the data collection, the error info along with the comment url will be recorded in `error_comment_reactions.txt` under folder `Output`.
@@ -111,3 +114,4 @@ It has 2 major parts:
 [5]:http://stackoverflow.com/questions/40049808/python-urllib-is-not-extracting-reader-comments-from-a-website
 [6]:https://doc.scrapy.org/en/0.12/intro/install.html
 [7]:https://pypi.python.org/pypi/selenium
+[8]:https://github.com/mozilla/geckodriver
