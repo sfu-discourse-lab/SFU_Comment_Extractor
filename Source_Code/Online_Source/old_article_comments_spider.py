@@ -16,7 +16,7 @@ import json
 
 class NewsSpider(CrawlSpider):
     '''
-    This class is responsible for crawling globe and mail articles and their comments
+    This class is responsible for crawling globe and mail articles and old comments before 2016/11/28
     '''
     name = 'ScrapeNews'
     allowed_domains = ["theglobeandmail.com"]
@@ -32,8 +32,9 @@ class NewsSpider(CrawlSpider):
 
     def __init__(self, **kwargs):
         '''
-        :param kwargs:
-         Read user arguments and initialize variables
+        Read user arguments and initialize variables
+        :param kwargs: command line input
+        :return: None
         '''
         CrawlSpider.__init__(self)
         self.startDate = kwargs['startDate']
@@ -41,11 +42,11 @@ class NewsSpider(CrawlSpider):
         print('startDate: ', self.startDate)
         print('self.endDate: ', self.endDate)
 
-        self.article_folder = "../../Sample_Resources/Online_Resources/ArticleRawData/"
-        self.comments_folder = "../../Sample_Resources/Online_Resources/CommentsRawData/"
-        self.error_articles_file = "../../Sample_Resources/Online_Resources/error_article_ids.txt"
-        self.error_comments_file = "../../Sample_Resources/Online_Resources/error_comments_article_ids.txt"
-        self.empty_comments_file = "../../Sample_Resources/Online_Resources/empty_comment_article_ids.txt"
+        self.article_folder = "../../Output/ArticleRawData/"
+        self.comments_folder = "../../Output/CommentsRawData/"
+        self.error_articles_file = "../../Output/error_article_ids.txt"
+        self.error_comments_file = "../../Output/error_comments_article_ids.txt"
+        self.empty_comments_file = "../../Output/empty_comment_article_ids.txt"
 
         self.headers = ({'User-Agent': 'Mozilla/5.0',
                          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -57,6 +58,13 @@ class NewsSpider(CrawlSpider):
 
 
     def parse_articles(self, response):
+        '''
+        Extract article data. Each article data will be saved as a JSON file under Output/ArticleRawData.
+        If there would be errors when extracting an article,
+        the error info along with the article url will be save into
+        :param response:
+        :return:
+        '''
         resp_url = response.url.strip()
         if resp_url in self.start_urls:
             article_ptn = "http://www.theglobeandmail.com/opinion/(.*?)/article(\d+)/"

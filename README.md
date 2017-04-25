@@ -65,10 +65,13 @@ It has 2 major parts:
 * Crawling is to extract new urls that appear in each seed url.
 * Seed urls and base urls are all unique. Collected base urls should <b>all start with "http://www.theglobeandmail.com/opinion/"</b>
 * File `sample_seed_urls.txt` under folder `Sample_Resources/Online_Resources` are the sample seed urls. Seed urls all come from `Factiva_csv.csv`. `collect_seed_urls.py` under folder `Source_Code/Online_Source` extracts the seed urls from `Factiva_csv.csv` for you.
+* `Python Scrapy` is the tool we use for online url crawling
+  * [To install Scrapy][6]
 * `article_base_url_spider.py` under folder `Source_Code/Online_Source` generates the base urls.
   * To run the code, in your terminal, `cd` to folder `Source_Code/Online_Source`, then type `sh run_article_base_url_spider.sh`. 
   * The input is a file of seed urls, check our `sample_seed_urls.txt` under folder `Sample_Resources/Online_Resources`. 
   * The output is a file of base urls, check our `sample_base_urls.txt` under folder `Sample_Resources/Online_Resources`.
+  * You can check `Logs/log.txt` for code running logs.
 
 2. Extract article data and comments before 2016/11/28
 * As we mentioned above, Globe & Mail comments created before 2016/11/28 became invisible from the website but some were still extractable while other cannot be extracted when we were doing data collection and Globe & Mail didn't give us a clear answer.
@@ -82,9 +85,17 @@ It has 2 major parts:
   * The API key of gigya used in this code is for public use. To find more info, [check this link][5]
   * The input is is a file of base urls, check our `sample_base_urls.txt` under folder `Sample_Resources/Online_Resources`.
   * The output are article data files, comments data files and empty comments file
-    * Check our `ArticleRawData` folder under `Sample_Resources/Online_Resources` for sample article data files.
-    * Check our `CommentsRawData` folder under `Sample_Resources/Online_Resources` for sample comments data files.
-    * Check our `empty-comment_article_ids.txt` file under `Sample_Resources/Online_Resources` for sample empty comments collections. <b>All the ids here are article ids</b>
+    * Check our `ArticleRawData` folder under `Output` for sample article data files.
+    * Check our `CommentsRawData` folder under `Output` for sample comments data files.
+    * Check our `empty_comment_article_ids.txt` file under `Output` for sample empty comments collections. <b>All the ids here are article ids</b>
+    * If there will be errors when extracting article or comments data, the error information along with article id/url will be saved in `error_article_ids.txt`, `error_comments_article_ids.txt` under folder `Output`
+    * You can check `Logs/log.txt` for code running logs.
+    
+3. Extract comments with reactions
+* Globe & Mail added reactions after 2016/11/28, allowing users to choose "Like", "Funny", "Wow", "Sad" or "Disagree" to express their feelings toward each comment. This piece of data is valuable to our future sentiment analysis. Therefore we also collected the comments data for each base url with reactions.
+* The comments here majorly are new comments after 2016/11/28. 
+* When we were collecting the data, Globe & Mail has recovered some old comments with empty reactions. However they could not confirm that all the old comments would be recovered, which means some old comments may still be invisible.
+
 
 
 [1]:https://cse.google.com/cse/all
@@ -92,3 +103,4 @@ It has 2 major parts:
 [3]:https://en.wikipedia.org/wiki/Factiva
 [4]:https://global.factiva.com/factivalogin/login.asp?productname=global
 [5]:http://stackoverflow.com/questions/40049808/python-urllib-is-not-extracting-reader-comments-from-a-website
+[6]:https://doc.scrapy.org/en/0.12/intro/install.html
