@@ -1,6 +1,6 @@
 # Get Comment, Reactions, Reaction Counts
 # For each comment url, a browser will be opened and the reaction buttion will be clicked automatically.
-# After getting the data, the borwser will be closed.
+# After getting the data, the borwser will be closed automatically.
 from selenium import webdriver
 import time
 import re
@@ -26,10 +26,11 @@ def get_reaction(img_str):
 
 def main():
     comment_urls = []
-    # all_base_urls = "../../resources/test_urls.txt"   # on my machine
-    # error_comment_reactions = "../../output/error_comment_reactions.txt"   # on my machine
-    all_base_urls = "/Users/devadmin/Documents/SFU_comments_extractor/resources/missing_comments.txt"
-    error_comment_reactions = "/Users/devadmin/Documents/SFU_comments_extractor/output/error_comment_reactions.txt"
+    all_base_urls = "../../Sample_Resources/Online_Resources/sample_base_urls.txt"
+    error_comment_reactions = "../../Output/error_comment_reactions.txt"
+    empty_comment_reactions = "../../Output/empty_comment_reactions.txt"
+    comment_reactions_folder = "../../Output/CommentReactionsRawData/"
+
     with open(all_base_urls) as base_input:
         for r in base_input:
             comment_urls.append(r.replace("\n", "")+"comments/")
@@ -37,8 +38,8 @@ def main():
 
 
     for comment_url in comment_urls:
-        # driver = webdriver.Firefox()  # my machine
-        driver = webdriver.Firefox(executable_path='/Users/devadmin/Documents/geckodriver')
+        driver = webdriver.Firefox()   # IF THIS DRIVER DOES NOT WORK, TRY THE ONE BELOW
+        # driver = webdriver.Firefox(executable_path='/Users/devadmin/Documents/geckodriver')  # CHANGE TO THE PATH OF YOUR geckodriver
         driver.get(comment_url)
         driver_session_id = driver.session_id
         if driver_session_id == None:
@@ -153,21 +154,16 @@ def main():
                     time.sleep(5)
                     return
 
-            if len(all_dct) == 0:
-                # f_name = r'../../output/empty_comment_ids.txt'  # my machine
-                f_name = '/Users/devadmin/Documents/SFU_comments_extractor/output/empty_comment_ids.txt'
-                with open(f_name, 'a') as out:
+            if len(all_dct) == 0:   # empty comments
+                with open(empty_comment_reactions, 'a') as out:
                     out.write(article_id+"\n")
-                print("test if", article_id)
                 driver.quit()
                 time.sleep(5)
 
-            else:
-                # f_name = r'../../output/Comment_Reactions/article_' + article_id + '_comments.json'  # my machine
-                f_name = '/Users/devadmin/Documents/SFU_comments_extractor/output/Comment_Reactions/article_' + article_id + '_comments.json'
+            else:   # comments with reactions and reaction counts
+                f_name = comment_reactions_folder + 'article_' + article_id + '_comments.json'
                 with open(f_name, 'w') as out:
                     json.dump(collections.OrderedDict(all_dct), out)
-                print("test else", article_id)
                 driver.quit()
                 time.sleep(5)
 

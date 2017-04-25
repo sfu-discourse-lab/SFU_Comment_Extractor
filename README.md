@@ -63,7 +63,7 @@ It has 2 major parts:
 
 1. Crawl base urls from seed urls
 * Crawling is to extract new urls that appear in each seed url.
-* Seed urls and base urls are all unique. Collected base urls should <b>all start with "http://www.theglobeandmail.com/opinion/"</b>
+* Seed urls and base urls are all unique. Collected base urls should <b>all start with "http://www.theglobeandmail.com/opinion/"</b>. So if a seed url does not have this prefix, it will be filtered out in base urls.
 * File `sample_seed_urls.txt` under folder `Sample_Resources/Online_Resources` are the sample seed urls. Seed urls all come from `Factiva_csv.csv`. `collect_seed_urls.py` under folder `Source_Code/Online_Source` extracts the seed urls from `Factiva_csv.csv` for you.
 * `Python Scrapy` is the tool we use for online url crawling
   * [To install Scrapy][6]
@@ -95,6 +95,13 @@ It has 2 major parts:
 * Globe & Mail added reactions after 2016/11/28, allowing users to choose "Like", "Funny", "Wow", "Sad" or "Disagree" to express their feelings toward each comment. This piece of data is valuable to our future sentiment analysis. Therefore we also collected the comments data for each base url with reactions.
 * The comments here majorly are new comments after 2016/11/28. 
 * When we were collecting the data, Globe & Mail has recovered some old comments with empty reactions. However they could not confirm that all the old comments would be recovered, which means some old comments may still be invisible.
+* Globe & Mail also starts to disable comments for some articles, because of the inappropriate amount of abusive comments, and therefore the extracted comments can be empty for some articles.
+* In this step, we majorly use `Python selenium`, it is able to extract any web elements on a website if you are able to find the HTML tag for each web element.
+* [To install Python selenium][7]
+* `get_comment_reactions.py` under folder `Source_Code/Online_Source` extracts comments and reactions, as well as reaction counts
+  * Extracted comments & reactions for each article will be saved as a JSON file in folder `Output/CommentReactionsRawData`.
+  * If an article with empty comments, the article id will be added in `empty_comment_reactions.txt` under folder `Output`.
+  * If there errors would happen during the data collection, the error info along with the comment url will be recorded in `error_comment_reactions.txt` under folder `Output`.
 
 
 
@@ -104,3 +111,4 @@ It has 2 major parts:
 [4]:https://global.factiva.com/factivalogin/login.asp?productname=global
 [5]:http://stackoverflow.com/questions/40049808/python-urllib-is-not-extracting-reader-comments-from-a-website
 [6]:https://doc.scrapy.org/en/0.12/intro/install.html
+[7]:https://pypi.python.org/pypi/selenium
