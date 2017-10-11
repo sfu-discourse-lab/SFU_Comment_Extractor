@@ -18,7 +18,7 @@ It has 2 major parts:
 * NOTE: Factiva data is not all 100% match original online articles.
 
 
-2. Manually download Gloab & Mail articles from Factiva library
+2. Manually download Globe & Mail articles from Factiva library
 * Login Factiva. 
 * In the `Date` section, select the date range. In our data, we chose `from 2012/01/01 to 2016/12/31`.
 * In the `Duplicates` section, select `Identical`, so that Factiva will remove identical duplicates.
