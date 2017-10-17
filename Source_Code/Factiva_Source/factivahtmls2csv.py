@@ -53,7 +53,7 @@ def clean_csv(input_csv, output_csv):
     df = pd.read_csv(input_csv)
     df['clean_LP'] = df.LP.apply(strip_tags)
     df['clean_TD'] = df.TD.apply(strip_tags)
-    df['comment'] = df[['clean_LP', 'clean_TD']].apply(lambda x: ' '.join(x), axis=1)
+    df['article_text'] = df[['clean_LP', 'clean_TD']].apply(lambda x: ' '.join(x), axis=1)
     df.to_csv(output_csv)
     print('Output written: ', output_csv)
 
