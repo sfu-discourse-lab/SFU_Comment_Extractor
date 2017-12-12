@@ -19,13 +19,18 @@ class TestSegmenter(unittest.TestCase):
          This is a simple test case where space is missing after the sentence ending period.'
         '''
         print('Simple test case where space is missing after the sentence ending period.')
+
         input_text = r"Rich,Funny you should mention the Roman Empire.That reminds me - Jesus Hippy was crucified for your skins."
-        expected = r"Rich,Funny you should mention the Roman Empire. That reminds me - Jesus Hippy was crucified for your skins."
+        expected = r"Rich, Funny you should mention the Roman Empire. That reminds me - Jesus Hippy was crucified for your skins."
+        self.assertEqual(word_segmentation(input_text, self.dictionary), expected)
+
+        input_text = r"They gone from the Nazi youth to a participant in the Dirty War.Lord help us."
+        expected = r"They gone from the Nazi youth to a participant in the Dirty War. Lord help us."
         self.assertEqual(word_segmentation(input_text, self.dictionary), expected)
 
 if __name__ == '__main__':
-    #unittest.main()
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestStringMethods)
-    unittest.TextTestRunner(verbosity=4).run(suite)
+    unittest.main()
+    #suite = unittest.TestLoader().loadTestsFromTestCase(TestStringMethods)
+    #unittest.TextTestRunner(verbosity=4).run(suite)
 
 
