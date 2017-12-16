@@ -2,24 +2,33 @@ import pandas as pd
 from fuzzywuzzy import fuzz
 import csv
 import argparse
-
+from timeit import default_timer as timer
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='csv file identifying duplicates between new and old comments')
     parser.add_argument('--new_comments_csv', '-i1', type=str, dest='new_comments_csv', action='store',
-                        default='../../Sample_Resources/Sample_Comments_CSVs/new_comments_preprocessed.csv',
+                        #default='../../Sample_Resources/Sample_Comments_CSVs/new_comments_preprocessed.csv',
+                        default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/new_comments_preprocessed.csv',
                         help="the input new comments csv file")
 
     parser.add_argument('--output_csv', '-o', type=str, dest='output_csv', action='store',
-                        default='../../Sample_Resources/Sample_Comments_CSVs/merged_duplicates.csv',
+                        #default='../../Sample_Resources/Sample_Comments_CSVs/merged_duplicates.csv',
+                        default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/merged_old_new_duplicates.csv',
                         help="the output csv file containing duplicate pairs")
 
     parser.add_argument('--old_comments_csv', '-i2', type=str, dest='old_comments_csv', action='store',
-                        default='../../Sample_Resources/Sample_Comments_CSVs/old_comments.csv',
+                        #default='../../Sample_Resources/Sample_Comments_CSVs/old_comments.csv',
+                        default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/old_comments_preprocessed.csv',
                         help="the input old comments csv file")
+
+    parser.add_argument('--threshold', '-t', type=int, dest='threshold', action='store',
+                        #default='../../Sample_Resources/Sample_Comments_CSVs/old_comments.csv',
+                        default=85,
+                        help="Threshold for fuzzy matching scores ")
 
     args = parser.parse_args()
     return args
+
 
 def identify(groupby_articles, args):
     '''
@@ -47,7 +56,7 @@ def identify(groupby_articles, args):
                             continue
                         score = fuzz.UWRatio(i.text.decode('utf-8'),m.text.decode('utf-8'))
                         tsort_score = fuzz.token_sort_ratio(i.text.decode('utf-8'),m.text.decode('utf-8'),force_ascii=False)
-                        if score>=90 or tsort_score>=90:
+                        if score>=args.threshold and tsort_score>=args.threshold:
                             writer.writerow([i.article_id,i.author,i.comment_counter,i.text,m.comment_counter,m.text,score,tsort_score])
                     except:
                         if len(str(i.text))<=len(str(m.text))/2 or len(str(m.text))<=len(str(i.text))/2:
@@ -56,23 +65,29 @@ def identify(groupby_articles, args):
                             continue
                         score = fuzz.UWRatio(str(i.text),str(m.text))
                         tsort_score = fuzz.token_sort_ratio(str(i.text),str(m.text),force_ascii=False)
-                        if score>=90 or tsort_score>=90:
+                        if score>=args.threshold and tsort_score>=args.threshold:
                             writer.writerow([i.article_id,i.author,i.comment_counter,i.text,m.comment_counter,m.text,score,tsort_score])
             #print(arts)
+    print('Output file written: ', args.output_csv)
 
 if __name__=="__main__":
     args = get_arguments()
-    
+    start = timer()
+    print('Start time: ', start)
     old = pd.read_csv(args.old_comments_csv)
     new = pd.read_csv(args.new_comments_csv)
     #print(new.head())
 
-    oldd = old.filter(['comment_counter','article_id','text','author'], axis=1)
+    oldd = old.filter(['comment_counter','article_id','text_preprocessed','author'], axis=1)
     neww = new.filter(['comment_counter','article_id','text_preprocessed','author'], axis=1)
     neww.rename(columns = {'text_preprocessed':'text'}, inplace = True)
+    oldd.rename(columns={'text_preprocessed': 'text'}, inplace=True)
     merged_comments = pd.concat([oldd,neww]).reset_index()
     #print(merged_comments.tail())
 
     article_groups = merged_comments.groupby('article_id')
     groupby_articles = [article_groups.get_group(x) for x in article_groups.groups]
     identify(groupby_articles,args)
+    end = timer()
+
+    print('Total time taken: ', end-start)
