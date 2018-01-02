@@ -58,8 +58,8 @@ def filter_duplicates(args):
     '''
     duplicates = pd.read_csv(args.merged_old_new_duplicates)
 
-    with open(args.comments_to_delete,"wb") as to_delete:
-        with open(args.comments_to_flag,"wb") as to_flag:
+    with open(args.comments_to_delete,"w") as to_delete:
+        with open(args.comments_to_flag,"w") as to_flag:
             ########Duplicate Removal Algorithm######
             for row in duplicates.itertuples():
                 if row.comment_counter1[:7] == row.comment_counter2[:7]:
