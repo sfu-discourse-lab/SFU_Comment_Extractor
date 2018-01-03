@@ -52,11 +52,11 @@ def merge_sources(args):
     '''
     flag_list = []
     list_of_comments_to_delete = []
-    with open('comment_to_flag.txt','r') as flag:
+    with open(args.comments_to_flag,'r') as flag:
         for f in flag.readlines():
              flag_list.append(f.strip().split(','))
                 
-    with open('comments_to_delete.txt','r') as comments_to_delete:
+    with open(args.comments_to_delete,'r') as comments_to_delete:
         for c in comments_to_delete.readlines():
             list_of_comments_to_delete.append(c.strip())
 
