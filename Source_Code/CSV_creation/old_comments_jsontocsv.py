@@ -51,9 +51,10 @@ def nested_thread_check(nested_replies,article_id,new_article_id):
             add_csv_sublist.append(get_field(comments['sender'],'loginProvider'))
             add_csv_sublist.append(get_field(comments['sender'],'name'))
             csv_list.append(add_csv_sublist)
+            thread_article_id = new_article_id
             if 'replies' in comments:
-                new_article_id = new_article_id + '_' + str(child_comment_counter)
-                nested_thread_check(get_field(comments,'replies'),article_id,new_article_id)
+                thread_article_id = thread_article_id + '_' + str(child_comment_counter)
+                nested_thread_check(get_field(comments,'replies'),article_id,thread_article_id)
             child_comment_counter = child_comment_counter + 1
     else:
         pass
