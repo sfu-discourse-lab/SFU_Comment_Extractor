@@ -10,20 +10,23 @@ def get_arguments():
     parser = argparse.ArgumentParser(description='Write csv files for crowd annotation')
     parser.add_argument('--input_csv', '-i', type=str, dest='input_csv', action='store',
                         #default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/merged_old_new_duplicates.csv',
-                        default=r'../../Sample_Resources/Sample_Comments_CSVs/comment_clustering_sample.csv',
+                        default=r'../../Sample_Resources/Sample_Comments_CSVs/sample_merged_duplicates.csv',
                         help="the input csv file")
 
     parser.add_argument('--new_comments', '-nc', type=str, dest='new_comments', action='store',
-                        default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/new_comments_preprocessed.csv',
+                        #default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/new_comments_preprocessed.csv',
+                        default=r'../../Sample_Resources/Sample_Comments_CSVs/sample_new_comments_preprocessed.csv',
                         help="the new comments csv file")
 
 
     parser.add_argument('--old_comments', '-oc', type=str, dest='old_comments', action='store',
-                        default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/old_comments_preprocessed.csv',
+                        #default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/old_comments_preprocessed.csv',
+                        default=r'../../Sample_Resources/Sample_Comments_CSVs/sample_old_comments_preprocessed.csv',
                         help="the old comments csv file")
 
     parser.add_argument('--pickle_path', '-p', type=str, dest='pickle_path', action='store',
-                        default=r'/Users/vkolhatk/Data/GnM_CSVs/python_pickling/sample_comment_clusters.p',
+                        #default=r'/Users/vkolhatk/Data/GnM_CSVs/python_pickling/sample_comment_clusters.p',
+                        default=r'../../Sample_Resources/Sample_Comments_CSVs/sample_comment_clusters.p',
                         help="the path to pickle comment clusters")
 
     parser.add_argument('--threshold', '-t', type=int, dest='threshold', action='store',
@@ -31,7 +34,8 @@ def get_arguments():
                         help="the threshold to remove comments")
 
     parser.add_argument('--file_with_ids_to_remove', '-o', type=str, dest='remove_ids_file', action='store',
-                        default='/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/sample_ids_to_remove.csv',
+                        #default='/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/sample_ids_to_remove.csv',
+                        default=r'../../Sample_Resources/Sample_Comments_CSVs/sample_ids_to_remove.csv',
                         help="the output file containing ids to remove")
 
     args = parser.parse_args()
@@ -182,6 +186,6 @@ if __name__=="__main__":
     end = timer()
     print('Total time taken: ', end-start)
 
-    explore_cluster(['source1_10218956_16', 'source1_10218956_19_0', 'source2_10218956_18_0', 'source2_10218956_26'], '/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/test.csv')
+    #explore_cluster(['source1_10218956_16', 'source1_10218956_19_0', 'source2_10218956_18_0', 'source2_10218956_26'], '/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/test.csv')
 
 
