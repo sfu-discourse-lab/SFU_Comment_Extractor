@@ -7,7 +7,8 @@ import argparse
 def get_arguments():
     '''
     argparse object initialization and reading input and output file paths.
-    input files: new_comments_preprocessed (-i1), old_comments_preprocessed.csv (-i2), comments_to_flag.txt (-i3), comments_to_delete.txt (-i4)
+    input files: new_comments_preprocessed (-i1), old_comments_preprocessed.csv (-i2),
+                 comments_to_flag.txt (-i3), comments_to_delete.txt (-i4)
     output file: final_merged_comments.csv (-o) 
     '''
     parser = argparse.ArgumentParser(description='csv file identifying duplicates between new and old comments')
@@ -60,22 +61,15 @@ def merge_sources(args):
         for c in comments_to_delete.readlines():
             list_of_comments_to_delete.append(c.strip())
 
-    main_dict = {}
-    value_struct = {'exact_match':[],'similar':[]}
+    main_dict = {k[0]:{v:[] for v in ['exact_match','similar']} for k in flag_list }
 
     for i in flag_list:
         weighted_ratio = int(i[-2])
         token_sort_ratio = int(i[-1])
         if main_dict.get(i[0]):
-            if (weighted_ratio>85 and weighted_ratio<100) and (token_sort_ratio>85 and token_sort_ratio<100):
+            if all(check_score in range(85,100) for check_score in [weighted_ratio,token_sort_ratio]):
                 main_dict[i[0]]['similar'].append(i[1])
-            if (weighted_ratio==100) and (token_sort_ratio==100):
-                main_dict[i[0]]['exact_match'].append(i[1])
-        else:
-            main_dict[i[0]] = value_struct
-            if (weighted_ratio>85 and weighted_ratio<100) and (token_sort_ratio>85 and token_sort_ratio<100):
-                main_dict[i[0]]['similar'].append(i[1])
-            if (weighted_ratio==100) and (token_sort_ratio==100):
+            if (weighted_ratio == token_sort_ratio == 100):
                 main_dict[i[0]]['exact_match'].append(i[1])
                 
     new_comments = pd.read_csv(args.new_comments_preprocessed)
@@ -85,19 +79,29 @@ def merge_sources(args):
                 
     merging_final = pd.concat([old_comments, new_comments])
 
-    merging_final['flags'] = """{'exact_match':[],'similar':[]}"""
-
     ''' 
     following line of commented code will delete the comments from the final csv 
     based on the comment_counters in comments_to_delete.txt
     '''
     # merging_final = merging_final.query('comment_counter not in @list_of_comments_to_delete')
 
-    for row in merging_final.itertuples():
-        if row.comment_counter in main_dict:
-            merging_final.set_value(row.Index, 'flags', str(main_dict.get(row.comment_counter)))
+    duplicate_flag_df = pd.DataFrame(list(main_dict.items()), columns=['comment_counter', 'duplicate_flag'])
 
-    return merging_final
+    # Merging final csv with flagged dataframe
+    final = pd.merge(merging_final,duplicate_flag_df,on='comment_counter',how='outer')
+
+    # filling NaN values in duplicate_flag column with default value
+    final['duplicate_flag'].fillna("""{'exact_match':[],'similar':[]}""", inplace=True)
+
+    # renaming column names
+    final.rename(columns = {'author':'comment_author'}, inplace = True)
+
+    # reordering columns
+    final = final[['article_id', 'comment_counter', 'comment_author', 'comment_id', 'text',
+                    'text_preprocessed', 'duplicate_flag', 'timestamp', 'post_time', 'TotalVotes',
+                    'negVotes', 'posVotes', 'reactions', 'replies']]
+    
+    return final
 
 if __name__=="__main__":
     args = get_arguments()
