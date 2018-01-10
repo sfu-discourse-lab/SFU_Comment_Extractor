@@ -3,7 +3,6 @@ import argparse
 import pandas as pd
 from timeit import default_timer as timer
 import re
-import spacy
 
 
 def get_arguments():
@@ -32,7 +31,6 @@ def get_article_stats(adf):
     Description: Given an article datafrane adf, this function returns a dictionary containing article stats.
     '''
     article_stats_dict = {}
-    tokenize = spacy.load('en')
 
     # Get Number of articles
     article_stats_dict['narticles'] = adf.shape[0]
@@ -42,8 +40,8 @@ def get_article_stats(adf):
     article_stats_dict['nauthors'] = len(s)
 
     # Number of words
-    words = adf.apply(lambda row: len(tokenize.tokenizer(re.sub('<p>|</p>', '', row['article_text']))), axis=1)
-    article_stats_dict['nwords'] = sum(words)
+    words = adf.apply(lambda row: len(re.sub('<p>|</p>', '', row['article_text']).split()), axis=1)
+    article_stats_dict['nwords_articles'] = sum(words)
 
     return article_stats_dict
 
@@ -56,11 +54,10 @@ def get_comments_stats(adf, cdf):
     '''
     comment_stats_dict = {}
     comment_per_author = {}
-    tokenize = spacy.load('en')
 
     # Number of words in comments
-    words = cdf.apply(lambda row: len(tokenize.tokenizer(row['comment_text'])), axis=1)
-    comment_stats_dict['nwords'] = sum(words)
+    words = cdf.apply(lambda row: len(row['comment_text'].split()), axis=1)
+    comment_stats_dict['nwords_comments'] = sum(words)
 
     adf = adf[adf['ncomments'] != 0]
 
