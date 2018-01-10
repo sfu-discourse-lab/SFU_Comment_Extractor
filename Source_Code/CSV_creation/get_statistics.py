@@ -1,28 +1,29 @@
 __author__ = 'Varada Kolhatkar'
-import argparse, sys, os, glob
+import argparse
 import pandas as pd
-import re
 from timeit import default_timer as timer
-import string
-import numpy as np
+import re
+import spacy
+
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='Write csv files for crowd annotation')
 
     parser.add_argument('--comments_csv', '-c', type=str, dest='comments_csv', action='store',
-                        default=r'/Users/vkolhatk/Data/GnM_CSVs/Final_csvs/gnm_comments.csv',
+                        default=r'/Users/Mehvish/Documents/SFU/Semester2/linguistics/CSVs/gnm_comments.csv',
                         help="the comments csv file")
 
     parser.add_argument('--articles_csv', '-a', type=str, dest='articles_csv', action='store',
-                        default=r'/Users/vkolhatk/Data/GnM_CSVs/Final_csvs/gnm_articles.csv',
+                        default=r'/Users/Mehvish/Documents/SFU/Semester2/linguistics/CSVs/gnm_articles.csv',
                         help="the articles csv file")
 
     parser.add_argument('--output', '-o', type=str, dest='output', action='store',
-                        default='/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/stats.csv',
+                        default='/Users/Mehvish/Documents/SFU/Semester2/linguistics/CSVs/stats.csv',
                         help="the output csv file")
 
     args = parser.parse_args()
     return args
+
 
 def get_article_stats(adf):
     '''
@@ -31,6 +32,7 @@ def get_article_stats(adf):
     Description: Given an article datafrane adf, this function returns a dictionary containing article stats.
     '''
     article_stats_dict = {}
+    tokenize = spacy.load('en')
 
     # Get Number of articles
     article_stats_dict['narticles'] = adf.shape[0]
@@ -39,7 +41,12 @@ def get_article_stats(adf):
     s = adf.groupby('author')['article_id'].nunique()
     article_stats_dict['nauthors'] = len(s)
 
+    # Number of words
+    words = adf.apply(lambda row: len(tokenize.tokenizer(re.sub('<p>|</p>', '', row['article_text']))), axis=1)
+    article_stats_dict['nwords'] = sum(words)
+
     return article_stats_dict
+
 
 def get_comments_stats(adf, cdf):
     '''
@@ -48,7 +55,33 @@ def get_comments_stats(adf, cdf):
     Description: Given an article datafrane adf, this function returns a dictionary containing comments stats.
     '''
     comment_stats_dict = {}
-    return comment_stats_dict
+    comment_per_author = {}
+    tokenize = spacy.load('en')
+
+    # Number of words in comments
+    words = cdf.apply(lambda row: len(tokenize.tokenizer(row['comment_text'])), axis=1)
+    comment_stats_dict['nwords'] = sum(words)
+
+    adf = adf[adf['ncomments'] != 0]
+
+    # Average number of comments per article
+    comment_stats_dict['avg_comments'] = round(sum(adf['ncomments']) / adf.shape[0])
+
+    # Average number of top level comments per article
+    comment_stats_dict['avg_top_level_comm'] = round(sum(adf['ntop_level_comments']) / adf.shape[0])
+
+    # Number of unique commenters
+    comment_stats_dict['ncommenters'] = cdf['author'].nunique()
+
+    # Average number of comments per commenter
+    comments = cdf.groupby(cdf['author'], as_index=False).count()
+    comment_per_author['commenter'] = comments['author']
+    comment_per_author['ncomments'] = comments['comment_text']
+
+    comment_stats_dict['avg_comm_per_author'] = round(sum(comment_per_author['ncomments']) / comments.shape[0])
+
+    return comment_stats_dict, comment_per_author
+
 
 def get_stats(articles_csv, comments_csv, output_csv):
     '''
@@ -64,17 +97,21 @@ def get_stats(articles_csv, comments_csv, output_csv):
     article_stats = get_article_stats(adf)
 
     # Get comment stats
-    comments_stats = get_comments_stats(adf, cdf)
+    comments_stats, comment_per_author = get_comments_stats(adf, cdf)
 
     # Combine article and comment stats
     stats_dict = {**article_stats, **comments_stats}
 
     # Write the stats dict as a CSV with key and values as columns
     df = pd.DataFrame.from_dict(stats_dict, orient='index')
+    commenter_df = pd.DataFrame.from_dict(comment_per_author)
+
     df.index.name = 'variable'
     df.columns = ['stats']
     df.to_csv(output_csv)
+    commenter_df.to_csv("commenter_output.csv", index=False)
     print('Data stats written in file: ', output_csv)
+
 
 if __name__ == "__main__":
     args = get_arguments()
