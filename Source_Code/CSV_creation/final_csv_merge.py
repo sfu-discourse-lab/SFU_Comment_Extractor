@@ -8,7 +8,7 @@ def get_arguments():
     '''
     argparse object initialization and reading input and output file paths.
     input files: new_comments_preprocessed (-i1), old_comments_preprocessed.csv (-i2),
-                 comments_to_flag.txt (-i3), comments_to_delete.txt (-i4)
+                 comments_to_flag.txt (-i3)
     output file: final_merged_comments.csv (-o) 
     '''
     parser = argparse.ArgumentParser(description='csv file identifying duplicates between new and old comments')
@@ -19,18 +19,13 @@ def get_arguments():
 
     parser.add_argument('--old_comments_csv', '-i2', type=str, dest='old_comments_preprocessed', action='store',
                         #default='../../Sample_Resources/Sample_Comments_CSVs/old_comments_preprocessed.csv',
-                        default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/old_comments_preprocessed.csv',
+                        default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/old_comments_preprocessed_all_cols.csv',
                         help="the input csv file for old_comments generated from preprocessing script")
 
     parser.add_argument('--comments_to_flag', '-i3', type=str, dest='comments_to_flag', action='store',
                         #default='../../Sample_Resources/Sample_Comments_CSVs/comments_to_flag.txt',
                         default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/comments_to_flag.txt',
                         help="the input txt file generated from duplicate_filter.py containing comment_counters to flag")
-
-    parser.add_argument('--comments_to_delete', '-i4', type=str, dest='comments_to_delete', action='store',
-                        #default='../../Sample_Resources/Sample_Comments_CSVs/comments_to_delete.txt',
-                        default=r'/Users/vkolhatk/Data/GnM_CSVs/intermediate_csvs/comments_to_delete.txt',
-                        help="the input txt file generated from duplicate_filter.py containing comment_counters to delete")
 
     parser.add_argument('--final_csv', '-o', type=str, dest='final_csv', action='store',
                         #default='../../Sample_Resources/Sample_Comments_CSVs/final_merged_comments.csv',
@@ -67,9 +62,9 @@ def merge_sources(args):
         weighted_ratio = int(i[-2])
         token_sort_ratio = int(i[-1])
         if main_dict.get(i[0]):
-            if all(check_score in range(85,100) for check_score in [weighted_ratio,token_sort_ratio]):
+            if all(check_score in range(85, 97) for check_score in [weighted_ratio,token_sort_ratio]):
                 main_dict[i[0]]['similar'].append(i[1])
-            if (weighted_ratio == token_sort_ratio == 100):
+            if all(check_score in range(97, 101) for check_score in [weighted_ratio,token_sort_ratio]):
                 main_dict[i[0]]['exact_match'].append(i[1])
                 
     new_comments = pd.read_csv(args.new_comments_preprocessed)
@@ -95,11 +90,14 @@ def merge_sources(args):
 
     # renaming column names
     final.rename(columns = {'author':'comment_author'}, inplace = True)
+    final.rename(columns = {'text_preprocessed':'comment_text'}, inplace = True)
 
     # reordering columns
-    final = final[['article_id', 'comment_counter', 'comment_author', 'comment_id', 'text',
-                    'text_preprocessed', 'duplicate_flag', 'timestamp', 'post_time', 'TotalVotes',
-                    'negVotes', 'posVotes', 'reactions', 'replies']]
+    final = final[['article_id', 'comment_counter', 'comment_author', 'timestamp', 'post_time', 'comment_text', 
+                    'duplicate_flag', 'TotalVotes', 'posVotes', 'negVotes', 'vote', 'reactions', 'replies',
+                    'comment_id', 'parentID', 'threadID' , 'streamId', 'edited', 'isModerator', 'highlightGroups',
+                    'moderatorEdit', 'descendantsCount', 'threadTimestamp', 'flagCount', 'sender_isSelf', 
+                    'sender_loginProvider', 'data_type', 'is_empty', 'status']]
     
     return final
 
