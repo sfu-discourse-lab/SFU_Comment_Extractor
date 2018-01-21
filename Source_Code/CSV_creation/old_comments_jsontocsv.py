@@ -4,6 +4,7 @@ from glob import glob
 import os
 import re
 import csv
+import argparse
 
 def get_arguments():
     '''
@@ -90,10 +91,10 @@ def json_to_csv(input_json_files,output_csv):
         # iterating through each article file
         csv_cache_list=[]
         with open(article) as data_file:
-        	try:
-    		data = json.load(data_file)
-        	except:
-            	continue
+            try:
+                data = json.load(data_file)
+            except:
+                continue
         root_comment_counter = 0
         for rootkey,rootval in data.items():
             article_id = 'source1_' + str(rootkey)
@@ -144,7 +145,7 @@ def json_to_csv(input_json_files,output_csv):
                         'timestamp','isModerator','threadID','TotalVotes','highlightGroups','moderatorEdit','negVotes',
                         'streamId','vote','descendantsCount','threadTimestamp','flagCount','posVotes','sender_isSelf','sender_loginProvider','author']
 
-    with open(output_csv, "w", newline='') as f:
+    with open(output_csv, "w", newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(csv_header_list)
         writer.writerows(csv_list)

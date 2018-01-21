@@ -6,7 +6,7 @@ import argparse
 import csv
 
 def get_arguments():
-	'''
+    '''
     argparse object initialization and reading input and output file paths.
     input files: input path to location where new comments json files are stored (-i)
     output file: the output csv file containing new comments (-o) 
@@ -60,7 +60,7 @@ def json_to_csv(input_json_files,output_csv):
 	for article in glob(input_json_files):
 	    # iterating through each article file
 	    csv_cache_list=[]
-	    with io.open(article) as data_file:    
+	    with open(article, encoding='utf-8') as data_file:    
 	        data = json.load(data_file)
 	        article_id = os.path.basename(article).split('_')[1]
 	    root_comment_counter = 0
@@ -98,7 +98,7 @@ def json_to_csv(input_json_files,output_csv):
 
 	csv_header_list = ["article_id", "comment_counter" ,"comment_id", "text", "reactions", "post_time", "author", "replies"]
 
-	with open(output_csv, "w", newline='') as f:
+	with open(output_csv, "w", newline='', encoding='utf-8') as f:
 	    writer = csv.writer(f)
 	    writer.writerow(csv_header_list)
 	    writer.writerows(csv_list)
