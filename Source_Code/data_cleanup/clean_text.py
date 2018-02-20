@@ -1,5 +1,5 @@
 import io
-
+import sys
 from normalize_csv_comments import *
 
 ''' Path for normalize_csv_comments.py:
@@ -7,7 +7,7 @@ https://github.com/sfu-discourse-lab/SFU_Comment_Extractor/blob/master/Source_Co
 
 
 def main():
-    directory = './news_data_24Nov2017'
+    directory = input_folder
 
     for root, directories, filenames, in os.walk(directory):
         for file_name in filenames:
@@ -17,7 +17,7 @@ def main():
                 path = os.path.join(root, file_name)
                 year = re.search('Nov2017/(.+?)/', path).group(1)
 
-                folder_name = './cleaned_articles/' + str(year)
+                folder_name = output_folder + str(year)
                 file_name = folder_name + "/" + file_name
 
                 if not os.path.exists(folder_name):
@@ -28,5 +28,7 @@ def main():
 
 
 if __name__ == "__main__":
+    input_folder = sys.argv[1]
+    output_folder = sys.argv[2]
     main()
 
