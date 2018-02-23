@@ -2,7 +2,13 @@ import pandas as pd
 import os
 import codecs
 import sys
+import re
 from datetime import datetime
+
+
+def clean_text(text):
+    text = text.replace("<p>", "").replace("</p>", "\n")
+    return re.sub('\.+', ".", text)
 
 
 def main(articles_file, articles_output_dir, comments_file, comments_output_dir):
@@ -19,7 +25,8 @@ def main(articles_file, articles_output_dir, comments_file, comments_output_dir)
 
         file_name = folder_name + "/" + str(article['article_id']) + ".txt"
         text_file = codecs.open(file_name, "w", "utf-8")
-        text_file.write(article['article_text'])
+        cleaned_text = clean_text(article['article_text'])
+        text_file.write(cleaned_text)
         text_file.close()
 
 
@@ -30,7 +37,9 @@ def main(articles_file, articles_output_dir, comments_file, comments_output_dir)
         folder_name = comments_output_dir
 
         file_name = folder_name + "/" + str(idx) + "_comments.txt"
-        articles.to_csv(file_name, header=None, index=None, columns=['comment_text'])
+        text_file = codecs.open(file_name, "w", "utf-8")
+        cleaned_text = clean_text(articles['comment_text'].str.cat(sep="\n"))
+        text_file.write(cleaned_text)
 
 
 if __name__ == "__main__":

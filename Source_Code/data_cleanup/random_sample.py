@@ -2,10 +2,43 @@ import os, random
 import pandas as pd
 import re
 import sys
+import codecs
 from shutil import copyfile
+from datetime import datetime
 
 
-def main(article_input_dir, sample_output_dir, articles_file, comments_output_dir, comments_file):
+def clean_text(text):
+    text = text.replace("<p>", "").replace("</p>", "\n")
+    return re.sub('\.+', ".", text)
+
+
+def filecount(dir):
+    return len([f for f in os.listdir(dir)])
+
+
+def main(gnm_articles, article_input_dir, sample_output_dir, articles_file, comments_output_dir, comments_file):
+
+    '''For writing article text with atleast one comment to txt files'''
+    articles_df = pd.read_csv(gnm_articles)
+    #
+    comments_df = pd.read_csv(comments_file)
+    articles_with_comm = list(comments_df['article_id'].unique())
+    articles_df = articles_df[articles_df['article_id'].isin(articles_with_comm)]
+
+    for idx, article in articles_df.iterrows():
+        date = datetime.strptime(article['published_date'].split()[0], '%Y-%m-%d')
+
+        folder_name = article_input_dir + str(date.year)
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+
+        file_name = folder_name + "/" + str(article['article_id']) + ".txt"
+        text_file = codecs.open(file_name, "w", "utf-8")
+        cleaned_text = clean_text(article['article_text'])
+        text_file.write(cleaned_text)
+        text_file.close()
+
+    print("Articles with atleast one comment written to files.")
     '''Getting sample articles'''
 
     files = set()
@@ -18,8 +51,10 @@ def main(article_input_dir, sample_output_dir, articles_file, comments_output_di
     for idx, row in count.iterrows():
         folder_name = dir + str(row[0])
         num_of_articles = row[1]
-
-        for i in range(1, num_of_articles):
+        num_of_files = filecount(folder_name)
+        for i in range(num_of_articles):
+            if num_of_files == len(files):
+                break
             file_name = random.choice(os.listdir(folder_name))
             while file_name in files:
                 file_name = random.choice(os.listdir(folder_name))
@@ -36,7 +71,6 @@ def main(article_input_dir, sample_output_dir, articles_file, comments_output_di
     '''Getting comments from sampled articles'''
 
     article_ids = pd.DataFrame(columns=['article_id', 'year'])
-    comments_df = pd.read_csv(comments_file)
     ids_list = []
     for root, directories, filenames, in os.walk(sample_output_dir):
         for f_name in filenames:
@@ -64,11 +98,12 @@ def main(article_input_dir, sample_output_dir, articles_file, comments_output_di
 
 
 if __name__ == "__main__":
-    article_input_dir = sys.argv[1]  # ./articles/
-    sample_output_dir = sys.argv[2]  # ./sampled_articles/
-    articles_file = sys.argv[3]  # articles_per_year.csv
+    gnm_articles = sys.argv[1]  # ./CSVs/gnm_articles.csv
+    article_input_dir = sys.argv[2]  # ./articles_w_comm/
+    sample_output_dir = sys.argv[3]  # ./sampled_articles/
+    articles_file = sys.argv[4]  # articles_per_year.csv
 
-    comments_output_dir = sys.argv[4]  # ./sampled_comments/
-    comments_file = sys.argv[5]  # ./CSVs/gnm_comments.csv
+    comments_output_dir = sys.argv[5]  # ./sampled_comments/
+    comments_file = sys.argv[6]  # ./CSVs/gnm_comments.csv
 
-    main(article_input_dir, sample_output_dir, articles_file, comments_output_dir, comments_file)
+    main(gnm_articles, article_input_dir, sample_output_dir, articles_file, comments_output_dir, comments_file)
