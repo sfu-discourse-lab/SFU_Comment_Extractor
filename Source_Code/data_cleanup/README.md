@@ -11,3 +11,8 @@ Generates a random subset of articles per year according to the number mentioned
 clean_text.py
 Imports normalize_csv_comments.py (https://github.com/sfu-discourse-lab/SFU_Comment_Extractor/blob/master/Source_Code/CSV_creation/normalize_csv_comments.py)
 and cleans the text of the articles in a given folder (news_data_24Nov2017 in this case but can be used for any folder)
+
+repair_gnm_article_text.py
+run the file by using:
+"python repair_gnm_article_text.py path_to_gnm_article_file"
+
